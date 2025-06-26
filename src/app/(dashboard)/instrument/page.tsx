@@ -1,7 +1,7 @@
 "use client";
 import { DataTable } from "@/components/data-table/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { AddOn, Toolbar } from "@/types/interface";
+import { AddOn, InstrumentData, Toolbar } from "@/types/interface";
 import { useQueryApi } from "@/hooks/use-query";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +11,7 @@ import { formatCurrency } from "@/lib/utils";
 import { DialogInstrument } from "@/components/pop-up/popup-instrument";
 import { useQueryClient } from "@tanstack/react-query";
 
-const columns: ColumnDef<any>[] = [
+const columns: ColumnDef<InstrumentData>[] = [
     {
         header: 'Instrument Code',
         accessorKey: 'instrumentCode',
@@ -45,12 +45,12 @@ export default function Instrument() {
         {
             name: 'Edit',
             icon: 'Pencil',
-            onClick: (row) => openPopup(row.original),
+            onClick: (row: unknown) => openPopup((row as { original: unknown }).original),
         },
         {
             name: 'Delete',
             icon: 'Trash',
-            onClick: (row) => deleteData(row.original),
+            onClick: (row) => deleteData((row as { original: unknown }).original),
         },
     ]
 
@@ -61,7 +61,7 @@ export default function Instrument() {
             onClick: () => openPopup(),
         }
     ]
-    function openPopup(data?: any) {
+    function openPopup(data?: unknown) {
         if (data) {
             openDialog(data, updateData);
         } else {
@@ -69,14 +69,14 @@ export default function Instrument() {
         }
     }
 
-    async function createData(dataSubmit: any) {
+    async function createData(dataSubmit: unknown) {
         mutate(dataSubmit, {
             onSuccess: () => {
                 closeDialog();
             }
         })
     }
-    async function updateData(data: any) {
+    async function updateData(data: unknown) {
         updateMutate(data, {
             onSuccess: () => {
                 closeDialog();
@@ -84,11 +84,11 @@ export default function Instrument() {
         })
     }
 
-    async function deleteData(data: any) {
+    async function deleteData(data: unknown) {
         confirmAlert({
             message: "This action cannot be undone. This will permanently delete your data from our servers",
             onConfirm: () => {
-                deleteMutate(data.id, {
+                deleteMutate((data as { id: string }).id, {
                     onSuccess: () => {
                         queryClient.invalidateQueries({ queryKey: ['savings'] });
                         closeDialog();
@@ -100,7 +100,7 @@ export default function Instrument() {
 
     const queryClient = useQueryClient();
     const { isOpen, openDialog, closeDialog } = useDialogStore();
-    const { data, isLoading, error } = useQueryApi('instruments', 'instruments', 'GET');
+    const { data, isLoading } = useQueryApi('instruments', 'instruments', 'GET');
     const { mutate } = useQueryApi('instruments', 'instruments', 'POST');
     const { mutate: updateMutate } = useQueryApi('instruments', 'instruments', 'PATCH');
     const { mutate: deleteMutate } = useQueryApi('instruments', 'instruments', 'DELETE');

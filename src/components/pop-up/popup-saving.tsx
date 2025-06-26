@@ -7,7 +7,6 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
@@ -15,8 +14,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { savingSchema } from "@/schema/schema"
 import { useDialogStore } from "@/stores/dialog-store"
-import { useEffect, useState } from "react"
-import { Switch } from "../ui/switch"
+import { useEffect } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { useQueryApi } from "@/hooks/use-query"
 import { formatCurrency } from "@/lib/utils"
@@ -43,14 +41,14 @@ export function DialogSaving() {
         });
     }, [data, form]);
 
-    const { data: instrumentData = [], isLoading } = useQueryApi('instruments', 'instruments', 'GET');
+    const { data: instrumentData = [] } = useQueryApi('instruments', 'instruments', 'GET');
     return (
         <Dialog open={isOpen} onOpenChange={closeDialog}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                     <DialogTitle>Manage Saving</DialogTitle>
                     <DialogDescription>
-                        Make changes to your data here. Click save when you're done.
+                        Make changes to your data here. Click save when you&apos;re done.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>

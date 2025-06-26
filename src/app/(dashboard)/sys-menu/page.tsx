@@ -8,8 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useDialogStore } from "@/stores/dialog-store";
 import { DialogSysMenu } from "@/components/pop-up/create-sys-menu";
 import { confirmAlert } from "@/lib/confirm-alert";
+import { MenuInfo } from "next-auth";
 
-const columns: ColumnDef<any>[] = [
+const columns: ColumnDef<MenuInfo>[] = [
     {
         header: 'Menu Code',
         accessorKey: 'menuCode',
@@ -40,12 +41,12 @@ export default function SysMenu() {
         {
             name: 'Edit',
             icon: 'Pencil',
-            onClick: (row) => openPopup(row.original),
+            onClick: (row) => openPopup((row as { original: MenuInfo }).original),
         },
         {
             name: 'Delete',
             icon: 'Trash',
-            onClick: (row) => deleteData(row.original),
+            onClick: (row) => deleteData((row as { original: MenuInfo }).original),
         },
     ]
 
@@ -56,7 +57,7 @@ export default function SysMenu() {
             onClick: () => openPopup(),
         }
     ]
-    function openPopup(data?: any) {
+    function openPopup(data?: unknown) {
         if (data) {
             openDialog(data, updateData);
         } else {
@@ -64,27 +65,30 @@ export default function SysMenu() {
         }
     }
 
-    async function createData(dataSubmit: any) {
+    async function createData(dataSubmit: unknown) {
         mutate(dataSubmit, {
             onSuccess: () => {
                 closeDialog();
             }
         })
     }
-    async function updateData(data: any) {
-        data = { ...data, id: data.menuCode };
-        updateMutate(data, {
-            onSuccess: () => {
-                closeDialog();
-            }
-        })
+    async function updateData(data: unknown) {
+        if (typeof data === 'object' && data !== null) {
+            const menuData = data as MenuInfo
+            data = { ...data, id: menuData.menuCode };
+            updateMutate(data, {
+                onSuccess: () => {
+                    closeDialog();
+                }
+            })
+        }
     }
 
-    async function deleteData(data: any) {
+    async function deleteData(data: MenuInfo) {
         confirmAlert({
             message: "This action cannot be undone. This will permanently delete your data from our servers",
             onConfirm: () => {
-                deleteMutate(data.id, {
+                deleteMutate(data.menuCode, {
                     onSuccess: () => {
                         closeDialog();
                     }
@@ -94,7 +98,7 @@ export default function SysMenu() {
     }
 
     const { isOpen, openDialog, closeDialog } = useDialogStore();
-    const { data, isLoading, error } = useQueryApi('sys-menus', 'sys-menus', 'GET');
+    const { data, isLoading } = useQueryApi('sys-menus', 'sys-menus', 'GET');
     const { mutate } = useQueryApi('sys-menus', 'sys-menus', 'POST');
     const { mutate: updateMutate } = useQueryApi('sys-menus', 'sys-menus', 'PATCH');
     const { mutate: deleteMutate } = useQueryApi('sys-menus', 'sys-menus', 'DELETE');

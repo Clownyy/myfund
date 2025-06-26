@@ -1,20 +1,17 @@
 "use client";
 import { DataTable } from "@/components/data-table/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { AddOn, Toolbar } from "@/types/interface";
+import { Toolbar, Transaction } from "@/types/interface";
 import { useQueryApi } from "@/hooks/use-query";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDialogStore } from "@/stores/dialog-store";
-import { confirmAlert } from "@/lib/confirm-alert";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { DialogSaving } from "@/components/pop-up/popup-saving";
 import { DialogIncome } from "@/components/pop-up/popup-income";
-import { DialogExpense } from "@/components/pop-up/popup-expense";
 import { Badge } from "@/components/ui/badge";
 import { useQueryClient } from "@tanstack/react-query";
 
-const columns: ColumnDef<any>[] = [
+const columns: ColumnDef<Transaction>[] = [
     {
         header: 'ID',
         accessorKey: 'id',
@@ -87,7 +84,7 @@ export default function TransactionHistory() {
         }
     ]
 
-    async function createData(dataSubmit: any) {
+    async function createData(dataSubmit: unknown) {
         mutate(dataSubmit, {
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['cash-pos'] });
@@ -97,8 +94,8 @@ export default function TransactionHistory() {
     }
 
     const queryClient = useQueryClient();
-    const { isOpen, data: dialogData, openDialog, closeDialog } = useDialogStore();
-    const { data, isLoading, error } = useQueryApi('transactions', 'transactions', 'GET');
+    const { isOpen, openDialog, closeDialog } = useDialogStore();
+    const { data, isLoading } = useQueryApi('transactions', 'transactions', 'GET');
     const { mutate } = useQueryApi('transactions', 'transactions', 'POST');
 
     if (isLoading) { return <DataTableSkeleton columns={columns} row={5} /> };
