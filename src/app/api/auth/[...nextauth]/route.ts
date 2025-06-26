@@ -1,8 +1,8 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { genRandomString } from "@/lib/utils";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt" as const,
         maxAge: 24 * 60 * 60,
@@ -15,7 +15,9 @@ export const authOptions = {
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-                console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth`)
+                if (!credentials) {
+                    return null;
+                }
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
