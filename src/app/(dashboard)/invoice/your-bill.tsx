@@ -42,6 +42,7 @@ export default function YourBill() {
 
     async function disbursement(data: Bill) {
         const balance = queryClient.getQueryData(['cash-pos', 'cash-pos']) as number;
+        console.log(balance);
         if (balance >= data.template.billAmount) {
             disburseMutate(data, {
                 onSuccess: () => {
