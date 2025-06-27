@@ -41,10 +41,8 @@ export default function YourBill() {
     ]
 
     async function disbursement(data: Bill) {
-        const balance = queryClient.getQueryData(['cash-pos', 'cash-pos']);
-        console.log(balance);
-        return true;
-        if (balance as number >= data.template.billAmount) {
+        const balance = dataBalance.amount;
+        if (balance >= data.template.billAmount) {
             disburseMutate(data, {
                 onSuccess: () => {
                     queryClient.invalidateQueries({ queryKey: ['transactions'] });
@@ -60,6 +58,7 @@ export default function YourBill() {
 
     const queryClient = useQueryClient();
     const { data, isLoading } = useQueryApi('bills', 'bills', 'GET');
+    const { data: dataBalance } = useQueryApi('cash-pos', 'cash-pos', 'GET');
     const { mutate: disburseMutate } = useQueryApi('disburse', 'bills', 'PATCH');
 
     if (isLoading) { return <DataTableSkeleton columns={columns} row={5} /> };
