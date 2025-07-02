@@ -107,7 +107,7 @@ export function DialogIncome() {
                                             <SelectContent>
                                                 {savingData.map((opt: any) => (
                                                     <SelectItem key={opt.id} value={opt.id.toString()}>
-                                                        {opt.savingName} - {formatCurrency(opt.instrument.sellPrice)}
+                                                        {opt.savingName} - {formatCurrency(opt.instrument.buyPrice)}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
