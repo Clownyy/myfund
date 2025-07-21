@@ -95,7 +95,7 @@ export function DialogIncome() {
                                                 field.onChange(value);
                                                 const selected = savingData.find((opt: any) => opt.id.toString() === value);
                                                 if (selected) {
-                                                    form.setValue('price', selected.instrument.sellPrice);
+                                                    form.setValue('price', selected.instrument.buyPrice);
                                                 }
                                             }}
                                             defaultValue={field.value.toString()}>
