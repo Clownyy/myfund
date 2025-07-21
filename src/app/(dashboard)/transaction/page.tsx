@@ -24,6 +24,7 @@ const columns: ColumnDef<Transaction>[] = [
     {
         header: 'Quantity',
         accessorKey: 'amount',
+        size: 10,
         cell: ({ row }) => {
             return formatCurrency(row.original.amount);
         }
@@ -51,6 +52,21 @@ const columns: ColumnDef<Transaction>[] = [
             return formatCurrency(row.original.price);
         }
     },
+    {
+        header: 'Amount',
+        accessorKey: 'transactionAmount',
+        cell: ({ row }) => {
+            const amount = row.original.amount * row.original.price;
+            return formatCurrency(amount);
+        }
+    },
+    {
+        header: 'Created At',
+        accessorKey: 'createdAt',
+        cell: ({ row }) => {
+            return formatDate(row.original.createdAt);
+        }
+    }
 ]
 
 const typeMap: Record<string, { label: string; variant: "success" | "destructive" | "default" }> = {
