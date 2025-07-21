@@ -14,7 +14,7 @@ export function SiteHeader() {
 	const session = useSession().data;
 	const userInfo = session?.user;
 	const { data, isLoading, error } = useQueryApi('cash-pos', 'cash-pos', 'GET');
-	const { data: nextInvoice, isLoading: isLoadingNextInvoice } = useQueryApi('next-invoice', 'next-invoice', 'GET');
+	const { data: asset, isLoading: isLoadingAsset } = useQueryApi('asset', 'asset', 'GET');
 	const { data: currInvoice, isLoading: isLoadingCurrInvoice } = useQueryApi('current-invoice', 'current-invoice', 'GET');
 	return (
 		<header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
@@ -67,13 +67,15 @@ export function SiteHeader() {
 					orientation="vertical"
 					className=" mx-2 data-[orientation=vertical]:h-4 hidden md:flex"
 				/>
-				{!isLoadingNextInvoice &&
-					<h1 className=" text-gray font-medium hidden md:flex">{`Next Invoice: ${formatCurrency(nextInvoice)}`}</h1>
+				{isLoadingAsset && <Skeleton className="h-4 w-[250px] hidden md:flex" />}
+				{!isLoadingAsset &&
+					<h1 className=" text-gray font-medium hidden md:flex">{`Your Asset: ${formatCurrency(asset)}`}</h1>
 				}
 				<Separator
 					orientation="vertical"
 					className=" mx-2 data-[orientation=vertical]:h-4 hidden md:flex"
 				/>
+				{isLoadingCurrInvoice && <Skeleton className="h-4 w-[250px] hidden md:flex" />}
 				{!isLoadingCurrInvoice &&
 					<h1 className=" text-gray font-medium hidden md:flex">{`Your Invoice: ${formatCurrency(currInvoice)}`}</h1>
 				}

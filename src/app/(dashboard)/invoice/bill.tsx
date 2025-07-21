@@ -86,7 +86,7 @@ export default function Bill() {
                             onSuccess: () => {
                                 queryClient.invalidateQueries({ queryKey: ['current-invoice'] });
                                 queryClient.invalidateQueries({ queryKey: ['bill-templates'] });
-                                queryClient.invalidateQueries({ queryKey: ['next-invoice'] });
+                                queryClient.invalidateQueries({ queryKey: ['asset'] });
                             }
                         });
                     }
