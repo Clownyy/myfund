@@ -7,7 +7,7 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDialogStore } from "@/stores/dialog-store";
 import { confirmAlert } from "@/lib/confirm-alert";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { DialogInstrument } from "@/components/pop-up/popup-instrument";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -37,6 +37,22 @@ const columns: ColumnDef<InstrumentData>[] = [
             return formatCurrency(amount)
         }
     },
+    {
+        header: 'Created At', 
+        accessorKey: 'createdAt',
+        cell: ({ row }) => {
+            const date = row.original.createdAt;
+            return formatDateTime(date)
+        }
+    },
+    {
+        header: 'Updated At', 
+        accessorKey: 'updatedAt',
+        cell: ({ row }) => {
+            const date = row.original.updatedAt;
+            return formatDateTime(date)
+        }
+    }
 ]
 
 

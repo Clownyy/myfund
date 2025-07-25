@@ -16,6 +16,8 @@ export interface InstrumentData {
 	instrumentName: string;
 	buyPrice: number;
 	sellPrice: number;
+	createdAt: string;
+	updatedAt: string;
 }
 
 export interface Bill {
