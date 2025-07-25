@@ -6,9 +6,10 @@ import { formatCurrency, getInitials } from "@/lib/utils";
 import { useQueryApi } from "@/hooks/use-query";
 import { Skeleton } from "./ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { BellIcon, Copy } from "lucide-react";
+import { BellIcon, Copy, Eye, EyeOff } from "lucide-react";
 import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 export function SiteHeader() {
 	const session = useSession().data;
@@ -16,6 +17,10 @@ export function SiteHeader() {
 	const { data, isLoading, error } = useQueryApi('cash-pos', 'cash-pos', 'GET');
 	const { data: asset, isLoading: isLoadingAsset } = useQueryApi('asset', 'asset', 'GET');
 	const { data: currInvoice, isLoading: isLoadingCurrInvoice } = useQueryApi('current-invoice', 'current-invoice', 'GET');
+	const [showBalance, setShowBalance] = useState(false);
+	const [showAsset, setShowAsset] = useState(false);
+
+
 	return (
 		<header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
 			<div className="mx-4 sm:mx-8 flex w-full h-14 items-center md:hidden">
@@ -59,23 +64,37 @@ export function SiteHeader() {
 					orientation="vertical"
 					className="mx-2 data-[orientation=vertical]:h-4 hidden md:flex"
 				/>
-				{isLoading && <Skeleton className="h-4 w-[250px] hidden md:flex" />}
+				{isLoading && <Skeleton className="h-4 w-[50px] hidden md:flex" />}
 				{!isLoading &&
-					<h1 className="text-gray font-medium hidden md:flex">{`Balance: ${formatCurrency(data.amount ?? 0)}`}</h1>
+					<h1 className="text-gray font-medium hidden md:flex">{`Balance: ${showBalance ? formatCurrency(data.amount ?? 0) : "••••••"}`}</h1>
 				}
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={() => setShowBalance(!showBalance)}
+				>
+					{showBalance ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+				</Button>
 				<Separator
 					orientation="vertical"
 					className=" mx-2 data-[orientation=vertical]:h-4 hidden md:flex"
 				/>
-				{isLoadingAsset && <Skeleton className="h-4 w-[250px] hidden md:flex" />}
+				{isLoadingAsset && <Skeleton className="h-4 w-[50px] hidden md:flex" />}
 				{!isLoadingAsset &&
-					<h1 className=" text-gray font-medium hidden md:flex">{`Your Asset: ${formatCurrency(asset)}`}</h1>
+					<h1 className=" text-gray font-medium hidden md:flex">{`Your Asset: ${showAsset ? formatCurrency(asset) : "••••••"}`}</h1>
 				}
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={() => setShowAsset(!showAsset)}
+				>
+					{showAsset ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+				</Button>
 				<Separator
 					orientation="vertical"
 					className=" mx-2 data-[orientation=vertical]:h-4 hidden md:flex"
 				/>
-				{isLoadingCurrInvoice && <Skeleton className="h-4 w-[250px] hidden md:flex" />}
+				{isLoadingCurrInvoice && <Skeleton className="h-4 w-[50px] hidden md:flex" />}
 				{!isLoadingCurrInvoice &&
 					<h1 className=" text-gray font-medium hidden md:flex">{`Your Invoice: ${formatCurrency(currInvoice)}`}</h1>
 				}
