@@ -6,7 +6,7 @@ import { useQueryApi } from "@/hooks/use-query";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDialogStore } from "@/stores/dialog-store";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, formatDateTime } from "@/lib/utils";
 import { DialogIncome } from "@/components/pop-up/popup-income";
 import { Badge } from "@/components/ui/badge";
 import { useQueryClient } from "@tanstack/react-query";
@@ -64,7 +64,7 @@ const columns: ColumnDef<Transaction>[] = [
         header: 'Created At',
         accessorKey: 'createdAt',
         cell: ({ row }) => {
-            return formatDate(row.original.createdAt);
+            return formatDateTime(row.original.createdAt);
         }
     }
 ]
