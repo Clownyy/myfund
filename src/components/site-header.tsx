@@ -73,7 +73,7 @@ export function SiteHeader() {
 					size="icon"
 					onClick={() => setShowBalance(!showBalance)}
 				>
-					{showBalance ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+					{showBalance ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
 				</Button>
 				<Separator
 					orientation="vertical"
@@ -88,7 +88,7 @@ export function SiteHeader() {
 					size="icon"
 					onClick={() => setShowAsset(!showAsset)}
 				>
-					{showAsset ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+					{showAsset ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
 				</Button>
 				<Separator
 					orientation="vertical"
