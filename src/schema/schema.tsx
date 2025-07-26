@@ -39,7 +39,7 @@ export const savingSchema = z.object({
 export const transactionSchema = z.object({
     id: z.number(),
     notes: z.string().min(1, "Description is required"),
-    amount: z.coerce.number().min(1, "Quantity is required"),
+    amount: z.coerce.number(),
     type: z.string().min(1, "Type is required"),
     price: z.coerce.number().min(1, "Price is required"),
     category: z.string().min(1, "Category is required"),
