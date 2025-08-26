@@ -1,4 +1,3 @@
-import { url } from "inspector";
 import { z } from "zod";
 
 export const sysMenuSchema = z.object({

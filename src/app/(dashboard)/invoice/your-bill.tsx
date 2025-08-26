@@ -66,7 +66,7 @@ export default function YourBill() {
         <>
             <Card className="@container/card">
                 <CardHeader>
-                    <CardTitle>Your Invoice</CardTitle>
+                    <CardTitle>Your Bill</CardTitle>
                     <CardDescription>
                         <span className="hidden @[540px]/card:block">
                             Invoice Data

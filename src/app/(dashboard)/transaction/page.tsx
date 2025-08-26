@@ -13,11 +13,6 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const columns: ColumnDef<Transaction>[] = [
     {
-        header: 'ID',
-        accessorKey: 'id',
-        size: 30
-    },
-    {
         header: 'Description',
         accessorKey: 'notes',
     },

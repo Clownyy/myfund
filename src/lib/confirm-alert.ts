@@ -1,4 +1,3 @@
-// lib/confirm-alert.ts
 import { useConfirmStore } from "@/stores/confirm-store";
 
 export const confirmAlert = (options: {

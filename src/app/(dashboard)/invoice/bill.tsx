@@ -145,10 +145,10 @@ export default function Bill() {
         <>
             <Card className="@container/card">
                 <CardHeader>
-                    <CardTitle>Invoice</CardTitle>
+                    <CardTitle>Billing</CardTitle>
                     <CardDescription>
                         <span className="hidden @[540px]/card:block">
-                            Invoice Data
+                            Billing Data
                         </span>
                     </CardDescription>
                 </CardHeader>
