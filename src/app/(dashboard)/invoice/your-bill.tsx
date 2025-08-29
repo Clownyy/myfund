@@ -42,6 +42,8 @@ export default function YourBill() {
 
     async function disbursement(data: Bill) {
         const balance = dataBalance.amount;
+        console.log("balance ", balance);
+        console.log("amount ", data.template.billAmount);
         if (balance >= data.template.billAmount) {
             disburseMutate(data, {
                 onSuccess: () => {
