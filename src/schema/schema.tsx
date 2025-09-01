@@ -29,7 +29,7 @@ export const instrumentSchema = z.object({
 export const savingSchema = z.object({
     id: z.number(),
     savingName: z.string().min(1, "Saving Name is required"),
-    amount: z.coerce.number().min(1, "Quantity is required"),
+    amount: z.coerce.number(),
     instrumentId: z.coerce.number({
         required_error: "Please select an instrument for this saving"
     })

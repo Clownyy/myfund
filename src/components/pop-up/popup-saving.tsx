@@ -79,7 +79,7 @@ export function DialogSaving() {
                             name="amount"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Quantity *</FormLabel>
+                                    <FormLabel>Quantity</FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder="Quantity"
@@ -107,7 +107,7 @@ export function DialogSaving() {
                                         <SelectContent>
                                             {instrumentData.map((opt: any) => (
                                                 <SelectItem key={opt.id} value={opt.id.toString()}>
-                                                    {opt.instrumentName} - {formatCurrency(opt.sellPrice)}
+                                                    {opt.instrumentCode} | {opt.instrumentName} - {formatCurrency(opt.sellPrice)}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

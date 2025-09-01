@@ -12,8 +12,8 @@ import { DialogSaving } from "@/components/pop-up/popup-saving";
 
 const columns: ColumnDef<SavingData>[] = [
     {
-        header: 'ID',
-        accessorKey: 'id',
+        header: 'Instrument Code',
+        accessorKey: 'instrument.instrumentCode',
         size: 10
     },
     {
