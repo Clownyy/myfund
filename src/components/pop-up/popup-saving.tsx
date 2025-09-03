@@ -24,7 +24,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 
 export function DialogSaving() {
     const { isOpen, data, closeDialog, onSubmit } = useDialogStore();
-    const [open, setOpen] = useState(false);
+    const [openPopover, setOpenPopover] = useState(false);
 
     const form = useForm({
         resolver: zodResolver(savingSchema),
@@ -102,7 +102,7 @@ export function DialogSaving() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Instrument *</FormLabel>
-                                    <Popover open={open} onOpenChange={setOpen}>
+                                    <Popover open={openPopover} onOpenChange={setOpenPopover}>
                                         <PopoverTrigger asChild>
                                             <FormControl>
                                                 <Button
@@ -138,7 +138,7 @@ export function DialogSaving() {
                                                                 value={opt.id.toString()}
                                                                 onSelect={(currentValue) => {
                                                                     field.onChange(currentValue);
-                                                                    setOpen(false);
+                                                                    setOpenPopover(false);
                                                                 }}
                                                             >
                                                                 <Check
