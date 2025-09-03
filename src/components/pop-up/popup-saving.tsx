@@ -14,13 +14,17 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { savingSchema } from "@/schema/schema"
 import { useDialogStore } from "@/stores/dialog-store"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { useQueryApi } from "@/hooks/use-query"
-import { formatCurrency } from "@/lib/utils"
+import { cn, formatCurrency } from "@/lib/utils"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
+import { Check, ChevronsUpDown } from "lucide-react"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 
 export function DialogSaving() {
     const { isOpen, data, closeDialog, onSubmit } = useDialogStore();
+    const [open, setOpen] = useState(false);
 
     const form = useForm({
         resolver: zodResolver(savingSchema),
@@ -85,7 +89,7 @@ export function DialogSaving() {
                                             placeholder="Quantity"
                                             type="number"
                                             {...field}
-                                            // onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                                        // onChange={(e) => field.onChange(e.target.valueAsNumber)}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -98,20 +102,62 @@ export function DialogSaving() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Instrument *</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
-                                        <FormControl>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select instrument" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {instrumentData.map((opt: any) => (
-                                                <SelectItem key={opt.id} value={opt.id.toString()}>
-                                                    {opt.instrumentCode} | {opt.instrumentName} - {formatCurrency(opt.sellPrice)}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <Popover open={open} onOpenChange={setOpen}>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    className="w-full justify-between"
+                                                >
+                                                    {field.value
+                                                        ? (() => {
+                                                            const selected = instrumentData.find(
+                                                                (opt: any) => opt.id.toString() === field.value.toString()
+                                                            );
+                                                            return selected
+                                                                ? `${selected.instrumentCode} | ${selected.instrumentName} - ${formatCurrency(
+                                                                    selected.sellPrice
+                                                                )}`
+                                                                : "Select instrument";
+                                                        })()
+                                                        : "Select instrument"}
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[400px] p-0">
+                                            <Command>
+                                                <CommandInput placeholder="Search instrument..." />
+                                                <CommandList>
+                                                    <CommandEmpty>No instrument found.</CommandEmpty>
+                                                    <CommandGroup>
+                                                        {instrumentData.map((opt: any) => (
+                                                            <CommandItem
+                                                                key={opt.id}
+                                                                value={opt.id.toString()}
+                                                                onSelect={(currentValue) => {
+                                                                    field.onChange(currentValue);
+                                                                    setOpen(false);
+                                                                }}
+                                                            >
+                                                                <Check
+                                                                    className={cn(
+                                                                        "mr-2 h-4 w-4",
+                                                                        field.value?.toString() === opt.id.toString()
+                                                                            ? "opacity-100"
+                                                                            : "opacity-0"
+                                                                    )}
+                                                                />
+                                                                {opt.instrumentCode} | {opt.instrumentName} -{" "}
+                                                                {formatCurrency(opt.sellPrice)}
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
                                     <FormMessage />
                                 </FormItem>
                             )}
