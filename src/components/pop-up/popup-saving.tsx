@@ -110,10 +110,11 @@ export function DialogSaving() {
                                                     role="combobox"
                                                     className="w-full justify-between"
                                                 >
-                                                    {field.value
-                                                        ? (() => {
+                                                    {field.value ? (
+                                                        (() => {
                                                             const selected = instrumentData.find(
-                                                                (opt: any) => opt.id.toString() === field.value.toString()
+                                                                (opt: any) =>
+                                                                    opt.id.toString() === field.value.toString()
                                                             );
                                                             return selected
                                                                 ? `${selected.instrumentCode} | ${selected.instrumentName} - ${formatCurrency(
@@ -121,7 +122,9 @@ export function DialogSaving() {
                                                                 )}`
                                                                 : "Select instrument";
                                                         })()
-                                                        : "Select instrument"}
+                                                    ) : (
+                                                        "Select instrument"
+                                                    )}
                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                 </Button>
                                             </FormControl>
