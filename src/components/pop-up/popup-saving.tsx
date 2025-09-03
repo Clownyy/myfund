@@ -21,6 +21,8 @@ import { cn, formatCurrency } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { ComboBox } from "../combobox"
+import { InstrumentData } from "@/types/interface"
 
 export function DialogSaving() {
     const { isOpen, data, closeDialog, onSubmit } = useDialogStore();
@@ -89,7 +91,6 @@ export function DialogSaving() {
                                             placeholder="Quantity"
                                             type="number"
                                             {...field}
-                                        // onChange={(e) => field.onChange(e.target.valueAsNumber)}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -102,65 +103,16 @@ export function DialogSaving() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Instrument *</FormLabel>
-                                    <Popover open={openPopover} onOpenChange={setOpenPopover}>
-                                        <PopoverTrigger asChild>
-                                            <FormControl>
-                                                <Button
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    className="w-full justify-between"
-                                                >
-                                                    {field.value ? (
-                                                        (() => {
-                                                            const selected = instrumentData.find(
-                                                                (opt: any) =>
-                                                                    opt.id.toString() === field.value.toString()
-                                                            );
-                                                            return selected
-                                                                ? `${selected.instrumentCode} | ${selected.instrumentName} - ${formatCurrency(
-                                                                    selected.sellPrice
-                                                                )}`
-                                                                : "Select instrument";
-                                                        })()
-                                                    ) : (
-                                                        "Select instrument"
-                                                    )}
-                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-[400px] p-0">
-                                            <Command>
-                                                <CommandInput placeholder="Search instrument..." />
-                                                <CommandList>
-                                                    <CommandEmpty>No instrument found.</CommandEmpty>
-                                                    <CommandGroup>
-                                                        {instrumentData.map((opt: any) => (
-                                                            <CommandItem
-                                                                key={opt.id}
-                                                                value={opt.id.toString()}
-                                                                onSelect={(currentValue) => {
-                                                                    field.onChange(currentValue);
-                                                                    setOpenPopover(false);
-                                                                }}
-                                                            >
-                                                                <Check
-                                                                    className={cn(
-                                                                        "mr-2 h-4 w-4",
-                                                                        field.value?.toString() === opt.id.toString()
-                                                                            ? "opacity-100"
-                                                                            : "opacity-0"
-                                                                    )}
-                                                                />
-                                                                {opt.instrumentCode} | {opt.instrumentName} -{" "}
-                                                                {formatCurrency(opt.sellPrice)}
-                                                            </CommandItem>
-                                                        ))}
-                                                    </CommandGroup>
-                                                </CommandList>
-                                            </Command>
-                                        </PopoverContent>
-                                    </Popover>
+                                    <ComboBox
+                                        items={instrumentData}
+                                        value={field.value}
+                                        onChange={(val) => field.onChange(Number(val))}
+                                        getLabel={(opt: InstrumentData) =>
+                                            `${opt.instrumentCode} | ${opt.instrumentName} - ${formatCurrency(opt.sellPrice)}`
+                                        }
+                                        getValue={(opt) => opt.id}
+                                        placeholder="Select instrument"
+                                    />
                                     <FormMessage />
                                 </FormItem>
                             )}

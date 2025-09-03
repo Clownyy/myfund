@@ -12,6 +12,7 @@ export interface Toolbar {
 }
 
 export interface InstrumentData {
+	id: number;
 	instrumentCode: string;
 	instrumentName: string;
 	buyPrice: number;
