@@ -31,7 +31,7 @@ export function SiteHeader() {
 					</Avatar>
 					<div>
 						<span className="block font-medium text-sm">
-							Muhammad Bafaqih
+							{userInfo?.firstName} {userInfo?.lastName}
 						</span>
 						<span className="block text-xs text-muted-foreground">
 							{!isLoadingAsset && <span>{`Rp. ${formatCurrency(asset)}`}</span>}
