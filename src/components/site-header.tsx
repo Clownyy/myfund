@@ -40,7 +40,7 @@ export function SiteHeader() {
 							}
 							<Button
 								variant={"ghost"}
-								className="ml-1 inline-flex items-center text-xs text-primary"
+								className="items-center text-xs text-primary"
 								onClick={() => setShowAsset(!showAsset)}
 							>
 								{showAsset ? <EyeOff className="text-xs text-muted-foreground"/> : <Eye className="text-xs text-muted-foreground"/>}
