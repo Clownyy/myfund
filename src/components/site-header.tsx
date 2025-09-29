@@ -34,16 +34,17 @@ export function SiteHeader() {
 							Muhammad Bafaqih
 						</span>
 						<span className="block text-xs text-muted-foreground">
-							{isLoadingAsset && <Skeleton className="h-4 w-[50px] hidden md:flex" />}
+							{isLoadingAsset && <Skeleton />}
 							{!isLoadingAsset &&
 								<span>{`Your Asset: ${showAsset ? formatCurrency(asset) : "••••••"}`}</span>
 							}
-							<button
-								className="ml-1 inline-flex items-center text-xs text-primary"
-								onClick={() => navigator.clipboard.writeText("12312312321321")}
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={() => setShowAsset(!showAsset)}
 							>
-								<Copy className="h-2 w-2" />
-							</button>
+								{showAsset ? <EyeOff/> : <Eye/>}
+							</Button>
 						</span>
 					</div>
 				</div>
