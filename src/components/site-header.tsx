@@ -38,12 +38,13 @@ export function SiteHeader() {
 							{!isLoadingAsset &&
 								<span>{`Rp. ${showAsset ? formatCurrency(asset) : "••••••"}`}</span>
 							}
-							<button
+							<Button
+								variant={"ghost"}
 								className="ml-1 inline-flex items-center text-xs text-primary"
 								onClick={() => setShowAsset(!showAsset)}
 							>
 								{showAsset ? <EyeOff className="text-xs text-muted-foreground"/> : <Eye className="text-xs text-muted-foreground"/>}
-							</button>
+							</Button>
 						</span>
 					</div>
 				</div>
