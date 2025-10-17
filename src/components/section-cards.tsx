@@ -24,7 +24,7 @@ export function SectionCards() {
 			<Card className="@container/card">
 				<CardHeader>
 					<CardDescription>Total Asset</CardDescription>
-					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
 						{isLoadingAsset && <Skeleton/>}
 						{!isLoadingAsset && <span>{`Rp. ${formatCurrency(asset)}`}</span>}
 					</CardTitle>
@@ -35,19 +35,19 @@ export function SectionCards() {
 						</Badge>
 					</CardAction>
 				</CardHeader>
-				<CardFooter className="flex-col items-start gap-1.5 text-sm">
+				{/* <CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
 						Trending up this month <IconTrendingUp className="size-4" />
 					</div>
 					<div className="text-muted-foreground">
 						Visitors for the last 6 months
 					</div>
-				</CardFooter>
+				</CardFooter> */}
 			</Card>
 			<Card className="@container/card">
 				<CardHeader>
 					<CardDescription>Cash Balance</CardDescription>
-					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
 					{isLoading && <Skeleton/>}
 						{!isLoading && <span>{`Rp. ${formatCurrency(data.amount)}`}</span>}
 					</CardTitle>
@@ -58,19 +58,19 @@ export function SectionCards() {
 						</Badge>
 					</CardAction>
 				</CardHeader>
-				<CardFooter className="flex-col items-start gap-1.5 text-sm">
+				{/* <CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
 						Down 20% this period <IconTrendingDown className="size-4" />
 					</div>
 					<div className="text-muted-foreground">
 						Acquisition needs attention
 					</div>
-				</CardFooter>
+				</CardFooter> */}
 			</Card>
 			<Card className="@container/card">
 				<CardHeader>
 					<CardDescription>Current Invoice</CardDescription>
-					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
 						{isLoadingCurrInvoice && <Skeleton/>}
 						{!isLoadingCurrInvoice && <span>{`Rp. ${formatCurrency(currInvoice)}`}</span>}
 					</CardTitle>
@@ -81,17 +81,17 @@ export function SectionCards() {
 						</Badge>
 					</CardAction>
 				</CardHeader>
-				<CardFooter className="flex-col items-start gap-1.5 text-sm">
+				{/* <CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
 						Strong user retention <IconTrendingUp className="size-4" />
 					</div>
 					<div className="text-muted-foreground">Engagement exceed targets</div>
-				</CardFooter>
+				</CardFooter> */}
 			</Card>
 			<Card className="@container/card">
 				<CardHeader>
 					<CardDescription>Next Invoice</CardDescription>
-					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
 						{isLoadingNextInvoice && <Skeleton/>}
 						{!isLoadingNextInvoice && <span>{`Rp. ${formatCurrency(nextInvoice)}`}</span>}
 					</CardTitle>
@@ -102,12 +102,12 @@ export function SectionCards() {
 						</Badge>
 					</CardAction>
 				</CardHeader>
-				<CardFooter className="flex-col items-start gap-1.5 text-sm">
+				{/* <CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
 						Steady performance increase <IconTrendingUp className="size-4" />
 					</div>
 					<div className="text-muted-foreground">Meets growth projections</div>
-				</CardFooter>
+				</CardFooter> */}
 			</Card>
 		</div>
 	)
