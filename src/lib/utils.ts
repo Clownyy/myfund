@@ -19,7 +19,7 @@ export function genRandomString(length: number) {
 export function formatCurrency(value: number, locale = 'id-ID', currency = 'IDR') {
 	return new Intl.NumberFormat(locale, {
 		minimumFractionDigits: 2,
-		maximumFractionDigits: 4,
+		maximumFractionDigits: 2,
 	}).format(value);
 }
 
