@@ -19,20 +19,32 @@ export function SectionCards() {
 	const { data: asset, isLoading: isLoadingAsset } = useQueryApi('asset', 'asset', 'GET');
 	const { data: currInvoice, isLoading: isLoadingCurrInvoice } = useQueryApi('current-invoice', 'current-invoice', 'GET');
 	const { data: nextInvoice, isLoading: isLoadingNextInvoice } = useQueryApi('next-invoice', 'next-invoice', 'GET');
+	const { data: profitLoss, isLoading: isLoadingProfitLoss } = useQueryApi('profit-loss', 'profit-loss', 'GET');
 	return (
 		<div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
 			<Card className="@container/card">
 				<CardHeader>
 					<CardDescription>Total Asset</CardDescription>
 					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
-						{isLoadingAsset && <Skeleton/>}
+						{isLoadingAsset && <Skeleton />}
 						{!isLoadingAsset && <span>{`Rp. ${formatCurrency(asset)}`}</span>}
 					</CardTitle>
 					<CardAction>
-						<Badge variant="outline">
-							<IconTrendingUp />
-							+12.5%
-						</Badge>
+						{isLoadingProfitLoss && <Skeleton className="hidden md:flex" />}
+						{!isLoadingProfitLoss && (
+							profitLoss > 0 ? (
+								<Badge variant="success">
+									<IconTrendingUp />
+									<span>{`${formatCurrency(profitLoss)} %`}</span>
+								</Badge>
+							) : (
+								<Badge variant="destructive">
+									<IconTrendingDown />
+									<span>{`${formatCurrency(profitLoss)} %`}</span>
+								</Badge>
+							)
+						)
+						}
 					</CardAction>
 				</CardHeader>
 				{/* <CardFooter className="flex-col items-start gap-1.5 text-sm">
@@ -48,7 +60,7 @@ export function SectionCards() {
 				<CardHeader>
 					<CardDescription>Cash Balance</CardDescription>
 					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
-					{isLoading && <Skeleton/>}
+						{isLoading && <Skeleton />}
 						{!isLoading && <span>{`Rp. ${formatCurrency(data.amount)}`}</span>}
 					</CardTitle>
 					<CardAction>
@@ -71,7 +83,7 @@ export function SectionCards() {
 				<CardHeader>
 					<CardDescription>Current Invoice</CardDescription>
 					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
-						{isLoadingCurrInvoice && <Skeleton/>}
+						{isLoadingCurrInvoice && <Skeleton />}
 						{!isLoadingCurrInvoice && <span>{`Rp. ${formatCurrency(currInvoice)}`}</span>}
 					</CardTitle>
 					<CardAction>
@@ -92,7 +104,7 @@ export function SectionCards() {
 				<CardHeader>
 					<CardDescription>Next Invoice</CardDescription>
 					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
-						{isLoadingNextInvoice && <Skeleton/>}
+						{isLoadingNextInvoice && <Skeleton />}
 						{!isLoadingNextInvoice && <span>{`Rp. ${formatCurrency(nextInvoice)}`}</span>}
 					</CardTitle>
 					<CardAction>
