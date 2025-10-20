@@ -14,7 +14,7 @@ import { useState } from "react";
 export function SiteHeader() {
 	const session = useSession().data;
 	const userInfo = session?.user;
-	const { data, isLoading, error } = useQueryApi('cash-pos', 'cash-pos', 'GET');
+	const { data, isLoading } = useQueryApi('cash-pos', 'cash-pos', 'GET');
 	const { data: asset, isLoading: isLoadingAsset } = useQueryApi('asset', 'asset', 'GET');
 	const { data: currInvoice, isLoading: isLoadingCurrInvoice } = useQueryApi('current-invoice', 'current-invoice', 'GET');
 	const [showBalance, setShowBalance] = useState(false);
@@ -34,7 +34,7 @@ export function SiteHeader() {
 							{userInfo?.firstName} {userInfo?.lastName}
 						</span>
 						<span className="block text-xs text-muted-foreground">
-							{!isLoadingAsset && <span>{`Rp. ${formatCurrency(asset)}`}</span>}
+							{!isLoading && <span>{`Rp. ${formatCurrency(data.amount ?? 0)}`}</span>}
 							{/* <button
 								className="ml-1 inline-flex items-center text-xs text-primary"
 								onClick={() => navigator.clipboard.writeText("12312312321321")}

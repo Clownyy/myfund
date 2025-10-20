@@ -17,18 +17,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
 import React from "react"
-import { DataTablePagination } from "./pagination-table"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { PlusIcon } from "lucide-react"
-import { DataTableColumnHeader } from "./header-table"
-import { Switch } from "@/components/ui/switch"
-import { Checkbox } from "@/components/ui/checkbox"
-import { AddOn } from "@/types/interface"
-import ContextMenuWrapper from "./context-menu";
-import * as LucideIcons from "lucide-react";
-import { LucideIcon } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 

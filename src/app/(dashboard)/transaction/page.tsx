@@ -10,6 +10,15 @@ import { formatCurrency, formatDate, formatDateTime } from "@/lib/utils";
 import { DialogIncome } from "@/components/pop-up/popup-income";
 import { Badge } from "@/components/ui/badge";
 import { useQueryClient } from "@tanstack/react-query";
+import { CardList } from "@/components/card-list";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import * as LucideIcons from "lucide-react";
+import { LucideIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DrawerIncome } from "@/components/pop-up/drawer-income";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { CardListSkeleton } from "@/components/card-list-skeleton";
 
 const columns: ColumnDef<Transaction>[] = [
     {
@@ -92,6 +101,13 @@ export default function TransactionHistory() {
             onClick: () => {
                 openDialog('SAVING', createData);
             },
+        },
+        {
+            name: 'Saving Out',
+            icon: 'DollarSign',
+            onClick: () => {
+                openDialog('SAVINGOUT', createData);
+            },
         }
     ]
 
@@ -109,28 +125,63 @@ export default function TransactionHistory() {
     const { data, isLoading } = useQueryApi('transactions', 'transactions', 'GET');
     const { mutate } = useQueryApi('transactions', 'transactions', 'POST');
 
-    if (isLoading) { return <DataTableSkeleton columns={columns} row={5} /> };
+    if (isLoading) { return <CardListSkeleton row={10} /> };
     return (
         <>
             <Card className="@container/card">
-                <CardHeader>
+                <CardContent>
                     <CardTitle>Transaction History</CardTitle>
                     <CardDescription>
                         <span className="hidden @[540px]/card:block">
                             Transaction History Data
                         </span>
                     </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <DataTable
-                        toolbar={toolbar}
-                        columns={columns}
-                        data={data}
-                        allowSelection
-                    />
+                    <div className="flex items-center justify-between py-2">
+                        <div className="flex">
+                        </div>
+                        <div className="flex">
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        size="sm"
+                                        variant={"ghost"}
+                                        className="h-8"
+                                    >
+                                        <LucideIcons.Ellipsis size={20} />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    {toolbar?.length ? toolbar.map(({ name, icon, onClick }, index) => {
+                                        const Icon = LucideIcons[icon as keyof typeof LucideIcons] as LucideIcon ?? LucideIcons.Circle;
+                                        return (
+                                            <DropdownMenuItem key={index}>
+                                                <Button
+                                                    key={index}
+                                                    size="sm"
+                                                    variant={"ghost"}
+                                                    className="h-8"
+                                                    onClick={onClick}
+                                                >
+                                                    <Icon size={20} className="" />
+                                                    {name}
+                                                </Button>
+                                            </DropdownMenuItem>
+                                        )
+                                    }) : ""}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                    </div>
+                    <ScrollArea className="h-150 w-full p-1">
+                        <div className="space-y-4">
+                            <CardList
+                                data={data}
+                            />
+                        </div>
+                    </ScrollArea>
                 </CardContent>
             </Card>
-            {isOpen && <DialogIncome />}
+            {isOpen && <DrawerIncome />}
         </>
     )
 }

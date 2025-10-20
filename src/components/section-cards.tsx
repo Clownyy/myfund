@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import {
 	Card,
 	CardAction,
+	CardContent,
 	CardDescription,
 	CardFooter,
 	CardHeader,
@@ -13,113 +14,69 @@ import {
 import { useQueryApi } from "@/hooks/use-query";
 import { Skeleton } from "./ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
+import { Eye, EyeOff, Info } from "lucide-react";
+import { useState } from "react";
+import { Button } from "./ui/button";
 
 export function SectionCards() {
-	const { data, isLoading, error } = useQueryApi('cash-pos', 'cash-pos', 'GET');
 	const { data: asset, isLoading: isLoadingAsset } = useQueryApi('asset', 'asset', 'GET');
 	const { data: currInvoice, isLoading: isLoadingCurrInvoice } = useQueryApi('current-invoice', 'current-invoice', 'GET');
-	const { data: nextInvoice, isLoading: isLoadingNextInvoice } = useQueryApi('next-invoice', 'next-invoice', 'GET');
 	const { data: profitLoss, isLoading: isLoadingProfitLoss } = useQueryApi('profit-loss', 'profit-loss', 'GET');
+	const [show, setShow] = useState(false);
 	return (
-		<div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-			<Card className="@container/card">
-				<CardHeader>
-					<CardDescription>Total Asset</CardDescription>
-					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
-						{isLoadingAsset && <Skeleton />}
-						{!isLoadingAsset && <span>{`Rp. ${formatCurrency(asset)}`}</span>}
-					</CardTitle>
-					<CardAction>
-						{isLoadingProfitLoss && <Skeleton className="hidden md:flex" />}
-						{!isLoadingProfitLoss && (
-							profitLoss > 0 ? (
-								<Badge variant="success">
-									<IconTrendingUp />
-									<span>{`${formatCurrency(profitLoss)} %`}</span>
-								</Badge>
-							) : (
-								<Badge variant="destructive">
-									<IconTrendingDown />
-									<span>{`${formatCurrency(profitLoss)} %`}</span>
-								</Badge>
-							)
-						)
-						}
-					</CardAction>
-				</CardHeader>
-				{/* <CardFooter className="flex-col items-start gap-1.5 text-sm">
-					<div className="line-clamp-1 flex gap-2 font-medium">
-						Trending up this month <IconTrendingUp className="size-4" />
+		<div className="mt-1">
+			<Card className="bg-primary text-primary-foreground shadow-md rounded-lg">
+				<CardContent>
+					<div className="flex justify-between items-center">
+						<div className="flex items-center space-x-1">
+							<CardTitle className="text-sm font-medium">Balance Available</CardTitle>
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={() => setShow(!show)}
+							>
+								{show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+							</Button>
+						</div>
 					</div>
-					<div className="text-muted-foreground">
-						Visitors for the last 6 months
+					<div className="">
+						<div className="flex items-baseline">
+							<span className="text-xl font-medium">Rp</span>
+							{isLoadingAsset && <Skeleton className="ml-1 h-5 w-40 rounded-md" />}
+							{!isLoadingAsset && <span className="text-3xl font-bold ml-1">{`${show ? formatCurrency(asset ?? 0) : "••••••"}`}</span>}
+						</div>
 					</div>
-				</CardFooter> */}
-			</Card>
-			<Card className="@container/card">
-				<CardHeader>
-					<CardDescription>Cash Balance</CardDescription>
-					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
-						{isLoading && <Skeleton />}
-						{!isLoading && <span>{`Rp. ${formatCurrency(data.amount)}`}</span>}
-					</CardTitle>
-					<CardAction>
-						<Badge variant="outline">
-							<IconTrendingDown />
-							-20%
-						</Badge>
-					</CardAction>
-				</CardHeader>
-				{/* <CardFooter className="flex-col items-start gap-1.5 text-sm">
-					<div className="line-clamp-1 flex gap-2 font-medium">
-						Down 20% this period <IconTrendingDown className="size-4" />
+					<div className="my-4 border-t border-white/20"></div>
+					<div className="flex justify-between text-sm">
+						<div>
+							<div className="flex items-center space-x-1">
+								<span className="block text-primary-foreground/80">Invoices</span>
+								<Info className="h-4 w-4" />
+							</div>
+							<div className="font-medium">
+								{isLoadingCurrInvoice && <Skeleton className="h-4 w-20" />}
+								{!isLoadingCurrInvoice && <span>{`Rp. ${show ? formatCurrency(currInvoice ?? 0) : "••••••"}`}</span>}
+							</div>
+						</div>
+						<div className="text-right">
+							<div className="flex items-center justify-end space-x-1">
+								<span className="block text-primary-foreground/80">P/L</span>
+								<Info className="h-4 w-4" />
+							</div>
+							<div className="font-medium">
+								{isLoadingProfitLoss && <Skeleton className="h-4 w-20" />}
+								{!isLoadingProfitLoss && (
+									profitLoss > 0 ? (
+										<span className="text-green-600">{`+${show ? formatCurrency(profitLoss ?? 0) : "••,••"}%`}</span>
+									) : (
+										<span className="text-red-600">{`${show ? formatCurrency(profitLoss ?? 0) : "••,••"}%`}</span>
+									)
+								)
+								}
+							</div>
+						</div>
 					</div>
-					<div className="text-muted-foreground">
-						Acquisition needs attention
-					</div>
-				</CardFooter> */}
-			</Card>
-			<Card className="@container/card">
-				<CardHeader>
-					<CardDescription>Current Invoice</CardDescription>
-					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
-						{isLoadingCurrInvoice && <Skeleton />}
-						{!isLoadingCurrInvoice && <span>{`Rp. ${formatCurrency(currInvoice)}`}</span>}
-					</CardTitle>
-					<CardAction>
-						<Badge variant="outline">
-							<IconTrendingUp />
-							+12.5%
-						</Badge>
-					</CardAction>
-				</CardHeader>
-				{/* <CardFooter className="flex-col items-start gap-1.5 text-sm">
-					<div className="line-clamp-1 flex gap-2 font-medium">
-						Strong user retention <IconTrendingUp className="size-4" />
-					</div>
-					<div className="text-muted-foreground">Engagement exceed targets</div>
-				</CardFooter> */}
-			</Card>
-			<Card className="@container/card">
-				<CardHeader>
-					<CardDescription>Next Invoice</CardDescription>
-					<CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
-						{isLoadingNextInvoice && <Skeleton />}
-						{!isLoadingNextInvoice && <span>{`Rp. ${formatCurrency(nextInvoice)}`}</span>}
-					</CardTitle>
-					<CardAction>
-						<Badge variant="outline">
-							<IconTrendingUp />
-							+4.5%
-						</Badge>
-					</CardAction>
-				</CardHeader>
-				{/* <CardFooter className="flex-col items-start gap-1.5 text-sm">
-					<div className="line-clamp-1 flex gap-2 font-medium">
-						Steady performance increase <IconTrendingUp className="size-4" />
-					</div>
-					<div className="text-muted-foreground">Meets growth projections</div>
-				</CardFooter> */}
+				</CardContent>
 			</Card>
 		</div>
 	)
