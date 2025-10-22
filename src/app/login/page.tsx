@@ -70,7 +70,7 @@ export default function Login() {
             <div className="w-[400px]">
                 <Card>
                     <CardHeader className="text-center">
-                        <CardTitle className="text-xl">My Funds</CardTitle>
+                        <CardTitle className="text-xl">Fundster</CardTitle>
                     </CardHeader>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(handleLogin)}>

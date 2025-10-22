@@ -1,53 +1,18 @@
 "use client";
-import { DataTable } from "@/components/data-table/data-table";
-import { ColumnDef } from "@tanstack/react-table";
 import { AddOn, BillTemplate, Toolbar } from "@/types/interface";
 import { useQueryApi } from "@/hooks/use-query";
-import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDialogStore } from "@/stores/dialog-store";
 import { confirmAlert } from "@/lib/confirm-alert";
-import { formatCurrency } from "@/lib/utils";
 import { DialogInvoice } from "@/components/pop-up/popup-invoice";
-import { Badge } from "@/components/ui/badge";
 import { useQueryClient } from "@tanstack/react-query";
-
-const columns: ColumnDef<BillTemplate>[] = [
-    {
-        header: 'Bill Name',
-        accessorKey: 'billName',
-    },
-    {
-        header: 'Amount',
-        accessorKey: 'billAmount',
-        cell: ({ row }) => {
-            const amount = row.original.billAmount;
-            return formatCurrency(amount)
-        }
-    },
-    {
-        header: 'Type',
-        accessorKey: 'type',
-        cell: ({ row }) => {
-            const { type } = row.original;
-            const { label, variant } = typeMap[type] || {};
-            return <Badge variant={variant || "outline"}>{label || type}</Badge>;
-        }
-    },
-    {
-        header: 'Freq',
-        accessorKey: 'frequency',
-        cell: ({ row }) => {
-            const { frequency, currFreq } = row.original;
-            return `${currFreq} / ${frequency}`
-        }
-    },
-    {
-        header: 'Active',
-        accessorKey: 'active',
-        size: 10
-    }
-]
+import { SwipeableList, SwipeButtonConfig } from "@/components/slide-item";
+import { CardListSkeleton } from "@/components/card-list-skeleton";
+import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
+import * as LucideIcons from "lucide-react";
+import { LucideIcon } from "lucide-react";
 
 const typeMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" }> = {
     MONTHLY: { label: "Monthly", variant: "default" },
@@ -56,18 +21,14 @@ const typeMap: Record<string, { label: string; variant: "default" | "secondary" 
 };
 
 export default function Bill() {
-    const addOns: AddOn[] = [
-        {
-            name: 'Edit',
-            icon: 'Pencil',
-            onClick: (row) => openPopup((row as { original: unknown }).original),
-        },
-        {
-            name: 'Delete',
-            icon: 'Trash',
-            onClick: (row) => deleteData((row as { original: unknown }).original),
-        },
-    ]
+    const editButton: SwipeButtonConfig = {
+        label: "Edit",
+        variant: "secondary",
+    };
+    const deleteButton: SwipeButtonConfig = {
+        label: "Delete",
+        variant: "destructive",
+    };
 
     const toolbar: Toolbar[] = [
         {
@@ -86,7 +47,6 @@ export default function Bill() {
                             onSuccess: () => {
                                 queryClient.invalidateQueries({ queryKey: ['current-invoice'] });
                                 queryClient.invalidateQueries({ queryKey: ['bill-templates'] });
-                                queryClient.invalidateQueries({ queryKey: ['asset'] });
                             }
                         });
                     }
@@ -140,25 +100,52 @@ export default function Bill() {
     const { mutate: deleteMutate } = useQueryApi('bill-templates', 'bill-templates', 'DELETE');
     const { mutate: generateMutate } = useQueryApi('generate-bills', 'bills', 'POST');
 
-    if (isLoading) { return <DataTableSkeleton columns={columns} row={5} /> };
+
+    const items = data?.map((item: any) => ({
+        ...item,
+        transType: typeMap[item.type].label,
+        variant: typeMap[item.type].variant,
+        description: item.billName + " " + item.currFreq + " / " + item.frequency,
+        amount: item.billAmount
+    }))
+
+    if (isLoading) { return <CardListSkeleton row={5} /> };
     return (
         <>
             <Card className="@container/card">
-                <CardHeader>
+                <CardContent>
                     <CardTitle>Billing</CardTitle>
                     <CardDescription>
                         <span className="hidden @[540px]/card:block">
                             Billing Data
                         </span>
                     </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <DataTable
-                        toolbar={toolbar}
-                        columns={columns}
-                        data={data}
-                        addOns={addOns}
-                        allowSelection
+                    <div className="flex items-center justify-between">
+                        <div className="flex">
+                        </div>
+                        <div className="flex">
+                            {toolbar?.length ? toolbar.map(({ name, icon, onClick }, index) => {
+                                const Icon = LucideIcons[icon as keyof typeof LucideIcons] as LucideIcon ?? LucideIcons.Circle;
+                                return (
+                                    <Button
+                                        key={index}
+                                        size="sm"
+                                        variant={"ghost"}
+                                        onClick={onClick}
+                                    >
+                                        <Icon size={20} className="" />
+                                        {name}
+                                    </Button>
+                                )
+                            }) : ""}
+                        </div>
+                    </div>
+                    <SwipeableList
+                        items={items}
+                        leftButtonConfig={editButton}
+                        rightButtonConfig={deleteButton}
+                        onLeftButton={(item: any) => openPopup(item)}
+                        onRightButton={(item: any) => deleteData(item)}
                     />
                 </CardContent>
             </Card>

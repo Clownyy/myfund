@@ -68,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 						>
 							<a href="#">
 								<IconInnerShadowTop className="!size-5" />
-								<span className="text-base font-semibold">My Funds</span>
+								<span className="text-base font-semibold">Fundster</span>
 							</a>
 						</SidebarMenuButton>
 					</SidebarMenuItem>

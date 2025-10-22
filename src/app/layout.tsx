@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "My Funds",
+	title: "Fundster",
 	description: "Made by Axaa",
 };
 

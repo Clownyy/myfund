@@ -1,44 +1,14 @@
 "use client";
-import { DataTable } from "@/components/data-table/data-table";
-import { ColumnDef } from "@tanstack/react-table";
-import { AddOn, Bill } from "@/types/interface";
+import { Bill } from "@/types/interface";
 import { useQueryApi } from "@/hooks/use-query";
-import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-
-const columns: ColumnDef<Bill>[] = [
-    {
-        header: 'Bill Name',
-        accessorKey: 'notes',
-    },
-    {
-        header: 'Amount',
-        accessorKey: 'template.billAmount',
-        cell: ({ row }) => {
-            const amount = row.original.template.billAmount;
-            return formatCurrency(amount)
-        }
-    },
-    {
-        header: 'Paid',
-        accessorKey: 'paid',
-        size: 10,
-
-    }
-]
+import { SwipeableList, SwipeButtonConfig } from "@/components/slide-item";
+import { CardListSkeleton } from "@/components/card-list-skeleton";
 
 
 export default function YourBill() {
-    const addOns: AddOn[] = [
-        {
-            name: 'Mark as paid',
-            icon: 'CircleDollarSign',
-            onClick: (row) => disbursement((row as { original: Bill }).original),
-        },
-    ]
 
     async function disbursement(data: Bill) {
         const balance = dataBalance.amount;
@@ -53,8 +23,8 @@ export default function YourBill() {
             })
         } else {
             toast.error(
-				"Insufficient Balance",
-			);
+                "Insufficient Balance",
+            );
         }
     }
 
@@ -63,24 +33,28 @@ export default function YourBill() {
     const { data: dataBalance } = useQueryApi('cash-pos', 'cash-pos', 'GET');
     const { mutate: disburseMutate } = useQueryApi('disburse', 'bills', 'PATCH');
 
-    if (isLoading) { return <DataTableSkeleton columns={columns} row={5} /> };
+    const items = data?.map((item: any) => ({ ...item, transType: item.paid ? "Paid" : "Unpaid", variant: item.paid ? "success" : "destructive", description: item.notes, amount: item.template.billAmount }))
+    const paidButton: SwipeButtonConfig = {
+        label: "Paid",
+        variant: "default",
+    };
+    if (isLoading) { return <CardListSkeleton row={5} /> };
     return (
         <>
             <Card className="@container/card">
-                <CardHeader>
+                <CardContent>
                     <CardTitle>Your Bill</CardTitle>
                     <CardDescription>
                         <span className="hidden @[540px]/card:block">
                             Invoice Data
                         </span>
                     </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <DataTable
-                        columns={columns}
-                        data={data}
-                        addOns={addOns}
-                        allowSelection={false}
+                    <SwipeableList
+                        items={items}
+                        leftButtonConfig={paidButton}
+                        rightButtonConfig={paidButton}
+                        onLeftButton={(item: any) => disbursement(item)}
+                        onRightButton={(item: any) => disbursement(item)}
                     />
                 </CardContent>
             </Card>
