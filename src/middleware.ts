@@ -14,5 +14,6 @@ export const config = {
     "/instrument/:path*", 
     "/transaction/:path*",
     "/saving/:path*",
+    "/profile/:path*",
   ],
 };

@@ -60,7 +60,7 @@ export function DrawerIncome() {
 
     return (
         <Drawer open={isOpen} onOpenChange={closeDialog} modal={false}>
-            <DrawerContent className="p-6 sm:max-w-md sm:mx-auto">
+            <DrawerContent className="p-6">
                 <DrawerHeader>
                     <DrawerTitle>Manage {data.toLowerCase()}</DrawerTitle>
                     <DrawerDescription>
@@ -77,7 +77,6 @@ export function DrawerIncome() {
                         })}
                         className="space-y-4"
                     >
-                        {/* Quantity */}
                         <FormField
                             control={form.control}
                             name="amount"
@@ -97,7 +96,6 @@ export function DrawerIncome() {
                             )}
                         />
 
-                        {/* Saving Selection (only for SAVING type) */}
                         {data === "SAVING" || data === "SAVINGOUT" && (
                             <FormField
                                 control={form.control}
@@ -135,7 +133,6 @@ export function DrawerIncome() {
                                 )} />
                         )}
 
-                        {/* Price */}
                         <FormField
                             control={form.control}
                             name="price"
@@ -155,7 +152,6 @@ export function DrawerIncome() {
                             )}
                         />
 
-                        {/* Category */}
                         <FormField
                             control={form.control}
                             name="category"
@@ -170,7 +166,6 @@ export function DrawerIncome() {
                             )}
                         />
 
-                        {/* Notes */}
                         <FormField
                             control={form.control}
                             name="notes"
@@ -185,7 +180,6 @@ export function DrawerIncome() {
                             )}
                         />
 
-                        {/* Footer Buttons */}
                         <DrawerFooter className="flex justify-end">
                             <DrawerClose asChild>
                                 <Button variant="outline">Cancel</Button>

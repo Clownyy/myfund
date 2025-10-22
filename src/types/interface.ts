@@ -11,6 +11,13 @@ export interface Toolbar {
 	align?: 'left' | 'right',
 }
 
+export interface ItemGroupProps {
+    icon: React.ReactNode;
+    title: string;
+    onClick?: () => void
+}
+
+
 export interface InstrumentData {
 	id: number;
 	instrumentCode: string;

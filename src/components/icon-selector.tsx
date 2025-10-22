@@ -17,6 +17,7 @@ export function IconSelector({ value, onChange }: IconSelectorProps) {
         "Bell",
         "MessageSquare",
         "BarChart",
+        "ChartPie",
         "FileText",
         "Calendar",
         "Search",
@@ -34,7 +35,6 @@ export function IconSelector({ value, onChange }: IconSelectorProps) {
         "ListChecks",
         "ListCollapse",
         "ListTodo",
-        "Rows",
     ];
 
 
