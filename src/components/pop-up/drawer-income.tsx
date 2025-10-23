@@ -177,7 +177,10 @@ export function DrawerIncome() {
                                             placeholder="Price"
                                             type="number"
                                             readOnly={
-                                                data === "SAVING" ? true : false
+                                                data === "SAVING" ||
+                                                data === "SAVINGOUT"
+                                                    ? true
+                                                    : false
                                             }
                                             {...field}
                                         />
