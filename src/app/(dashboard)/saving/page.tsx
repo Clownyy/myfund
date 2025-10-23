@@ -15,7 +15,7 @@ export default function PortfolioPage() {
     const holdings = data?.holdings ?? [];
 
     return (
-        <div className="p-4 space-y-4">
+        <div className="py-4 space-y-4">
             {/* Total summary card */}
             <Card className="py-2 bg-primary text-primary-foreground shadow-lg border-none rounded-2xl">
                 <CardContent className="p-6">
