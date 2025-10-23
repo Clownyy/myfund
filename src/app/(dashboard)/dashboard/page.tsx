@@ -58,6 +58,12 @@ export default function Page() {
         mutate(dataSubmit, {
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ["cash-pos"] });
+                queryClient.invalidateQueries({ queryKey: ["savings"] });
+                queryClient.invalidateQueries({ queryKey: ["asset"] });
+                queryClient.invalidateQueries({
+                    queryKey: ["current-invoice"],
+                });
+                queryClient.invalidateQueries({ queryKey: ["profit-loss"] });
                 closeDialog();
             },
         });
