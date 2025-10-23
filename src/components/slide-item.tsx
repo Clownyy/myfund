@@ -16,7 +16,7 @@ type SwipeableItem = {
 export interface SwipeButtonConfig {
     label: string;
     className?: string;
-    variant: "default" | "destructive";
+    variant: "default" | "destructive" | "secondary";
 }
 
 interface SwipeableListProps {
