@@ -1,30 +1,37 @@
 "use client";
 import { useEffect, useState } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormMessage,
+} from "@/components/ui/form";
 import { signIn, useSession } from "next-auth/react";
 import { toast } from "sonner";
-import Link from "next/link";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 const loginSchema = z.object({
     username: z.string().min(1, "Username is required"),
     password: z.string().min(1, "Password is required"),
-})
+});
 
-const otpSchema = z.object({
-    otp: z.string().min(6, "Invalid OTP"),
-})
+interface Login {
+    username: string;
+    password: string;
+}
 
 export default function Login() {
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const [isLoading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -36,14 +43,7 @@ export default function Login() {
         },
     });
 
-    const formOtp = useForm({
-        resolver: zodResolver(otpSchema),
-        defaultValues: {
-            otp: "",
-        },
-    });
-
-    const handleLogin = async (data: any) => {
+    const handleLogin = async (data: Login) => {
         setLoading(true);
         const res = await signIn("credentials", {
             username: data.username,
@@ -54,7 +54,7 @@ export default function Login() {
         if (res?.error) {
             toast.error("Login failed, username or password is incorrect");
         } else {
-            toast.success("Login successful!")
+            toast.success("Login successful!");
             router.replace("/dashboard");
         }
     };
@@ -66,59 +66,110 @@ export default function Login() {
     }, [session, router]);
 
     return (
-        <div className="w-full h-screen flex justify-center items-center">
-            <div className="w-[400px]">
-                <Card>
-                    <CardHeader className="text-center">
-                        <CardTitle className="text-xl">Fundster</CardTitle>
+        <div className="w-full h-screen flex items-center justify-center bg-gradient-to-b from-primary/30 via-background to-background">
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="w-full max-w-sm "
+            >
+                <Card className="border-none shadow-lg rounded-2xl backdrop-blur-xl bg-background/70">
+                    <CardHeader className="text-center space-y-2">
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.2, duration: 0.4 }}
+                        >
+                            <div className="mx-auto w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shadow-md">
+                                <span className="text-background font-bold text-xl">
+                                    F
+                                </span>
+                            </div>
+                        </motion.div>
+                        <CardTitle className="text-2xl font-semibold tracking-tight mt-2">
+                            Fundster
+                        </CardTitle>
+                        <p className="text-sm text-muted-foreground">
+                            Sign in to continue
+                        </p>
                     </CardHeader>
+
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(handleLogin)}>
-                            <CardContent>
-                                <div className="grid gap-6">
-                                    <div className="grid gap-6">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="username">Username</Label>
-                                            <FormField
-                                                control={form.control}
-                                                name="username"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormControl>
-                                                            <Input placeholder="Username" type="text" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-                                        <div className="grid gap-2">
-                                            <div className="flex items-center">
-                                                <Label htmlFor="password">Password</Label>
-                                            </div>
-                                            <FormField
-                                                control={form.control}
-                                                name="password"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormControl>
-                                                            <Input placeholder="Password" type="password" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-                                        <Button type="submit" className="w-full" disabled={isLoading}>
-                                            {isLoading ? "Logging in..." : "Login"}
-                                        </Button>
-                                    </div>
-                                </div>
+                            <CardContent className="space-y-6">
+                                {/* Username */}
+                                <FormField
+                                    control={form.control}
+                                    name="username"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <Label htmlFor="username">
+                                                Username
+                                            </Label>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Enter username"
+                                                    {...field}
+                                                    className="h-12 rounded-xl text-base"
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {/* Password */}
+                                <FormField
+                                    control={form.control}
+                                    name="password"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <Label htmlFor="password">
+                                                Password
+                                            </Label>
+                                            <FormControl>
+                                                <Input
+                                                    type="password"
+                                                    placeholder="••••••••"
+                                                    {...field}
+                                                    className="h-12 rounded-xl text-base"
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {/* Submit */}
+                                <Button
+                                    type="submit"
+                                    className="w-full h-12 rounded-xl text-base font-semibold shadow-sm hover:shadow-md transition-all"
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                            Logging in...
+                                        </>
+                                    ) : (
+                                        "Login"
+                                    )}
+                                </Button>
                             </CardContent>
                         </form>
                     </Form>
                 </Card>
-            </div>
+
+                {/* Footer */}
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-center text-xs text-muted-foreground mt-6"
+                >
+                    © 2025 Fundster. All rights reserved.
+                </motion.div>
+            </motion.div>
         </div>
     );
 }

@@ -1,16 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { motion, PanInfo, useMotionValue, MotionValue } from "framer-motion";
+import { motion, PanInfo, useMotionValue, animate } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Separator } from "./ui/separator";
 import { formatCurrency } from "@/lib/utils";
 import { ScrollArea } from "./ui/scroll-area";
-import { Badge } from "./ui/badge";
 
 type SwipeableItem = {
     id: number;
-    transType: any;
-    variant: "default" | "destructive" | "secondary" | "success";
+    transType: string;
     description: string;
     amount: number;
 };
@@ -18,7 +16,7 @@ type SwipeableItem = {
 export interface SwipeButtonConfig {
     label: string;
     className?: string;
-    variant: "default" | "destructive" | "secondary";
+    variant: "default" | "destructive";
 }
 
 interface SwipeableListProps {
@@ -84,75 +82,86 @@ const SwipeableListItem: React.FC<SwipeableListItemProps> = ({
 }) => {
     const x = useMotionValue(0);
 
-    const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const handleDragEnd = (
+        _: MouseEvent | TouchEvent | PointerEvent,
+        info: PanInfo,
+    ) => {
         const offsetX = info.offset.x;
+        const velocity = info.velocity.x;
 
-        if (offsetX > 80 && leftButtonConfig) {
+        // smooth spring return
+        const animateTo = (target: number) =>
+            animate(x, target, {
+                type: "spring",
+                stiffness: 250,
+                damping: 25,
+                mass: 0.7,
+            });
+
+        if (offsetX > 80 || velocity > 400) {
             setOpenItemId(item.id);
-            x.set(100);
-        } else if (offsetX < -80 && rightButtonConfig) {
+            animateTo(100);
+        } else if (offsetX < -80 || velocity < -400) {
             setOpenItemId(item.id);
-            x.set(-100);
+            animateTo(-100);
         } else {
             setOpenItemId(null);
-            x.set(0);
+            animateTo(0);
         }
     };
 
     return (
         <div className="relative">
+            {/* Background buttons */}
             <div className="absolute inset-0 flex justify-between items-center px-4">
-                <div className="pointer-events-auto">
-                    {leftButtonConfig && (
-                        <Button
-                            variant={leftButtonConfig.variant}
-                            className={leftButtonConfig.className}
-                            onClick={() => onAction(item, "left")}
-                        >
-                            {leftButtonConfig.label}
-                        </Button>
-                    )}
-                </div>
-                <div className="pointer-events-auto">
-                    {rightButtonConfig && (
-                        <Button
-                            variant={rightButtonConfig.variant}
-                            className={rightButtonConfig.className}
-                            onClick={() => onAction(item, "right")}
-                        >
-                            {rightButtonConfig.label}
-                        </Button>
-                    )}
-                </div>
+                {leftButtonConfig && (
+                    <Button
+                        variant={leftButtonConfig.variant}
+                        className={leftButtonConfig.className}
+                        onClick={() => onAction(item, "left")}
+                    >
+                        {leftButtonConfig.label}
+                    </Button>
+                )}
+                {rightButtonConfig && (
+                    <Button
+                        variant={rightButtonConfig.variant}
+                        className={rightButtonConfig.className}
+                        onClick={() => onAction(item, "right")}
+                    >
+                        {rightButtonConfig.label}
+                    </Button>
+                )}
             </div>
 
+            {/* Foreground draggable card */}
             <motion.div
                 style={{ x, backgroundColor: "var(--card)" }}
-                drag={
-                    leftButtonConfig && rightButtonConfig
-                        ? "x"
-                        : leftButtonConfig
-                            ? "x"
-                            : rightButtonConfig
-                                ? "x"
-                                : false
-                }
-                dragConstraints={{
-                    left: rightButtonConfig ? -120 : 0,
-                    right: leftButtonConfig ? 120 : 0,
-                }}
-                dragElastic={0.2}
+                drag="x"
+                dragConstraints={{ left: -120, right: 120 }}
+                dragElastic={0.25}
                 onDragStart={() => setOpenItemId(item.id)}
                 onDragEnd={handleDragEnd}
-                animate={{ x: isOpen ? x.get() : 0 }}
-                transition={{ type: "spring", stiffness: 260, damping: 25 }}
+                animate={{
+                    x: isOpen ? (x.get() > 0 ? 100 : -100) : 0,
+                }}
+                transition={{
+                    type: "spring",
+                    stiffness: 250,
+                    damping: 30,
+                    mass: 0.7,
+                }}
                 className="relative bg-card py-4 text-foreground cursor-grab active:cursor-grabbing select-none pointer-events-auto"
             >
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center">
+                    <div className="flex items-center ml-2">
                         <div>
-                            <Badge className="font-medium text-xs" variant={item.variant || "outline"}>{item.transType}</Badge>
-                            <p className="text-xs text-muted-foreground">{item.description}</p>
+                            <p className="font-medium text-sm">
+                                {item.transType}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                                {item.description}
+                            </p>
                         </div>
                     </div>
                     <div className="text-sm text-right mr-2">

@@ -24,9 +24,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { transactionSchema } from "@/schema/schema";
 import { useDialogStore } from "@/stores/dialog-store";
 import { useEffect } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../ui/select";
 import { useQueryApi } from "@/hooks/use-query";
 import { formatCurrency } from "@/lib/utils";
+import { InstrumentData } from "@/types/interface";
 
 export function DrawerIncome() {
     const { isOpen, data, closeDialog, onSubmit } = useDialogStore();
@@ -40,7 +47,7 @@ export function DrawerIncome() {
             type: data,
             price: data.price ?? 0,
             category: data.category ?? "",
-            savingId: data.savingId ?? "",
+            instrumentId: data.instrumentId ?? "",
         },
     });
 
@@ -52,11 +59,15 @@ export function DrawerIncome() {
             type: data,
             price: data.price ?? 0,
             category: data.category ?? "",
-            savingId: data.savingId ?? "",
+            instrumentId: data.instrumentId ?? "",
         });
     }, [data, form]);
 
-    const { data: savingData = [], isLoading } = useQueryApi("savings", "savings", "GET");
+    const { data: instrumentData = [] } = useQueryApi(
+        "instruments",
+        "instruments",
+        "GET",
+    );
 
     return (
         <Drawer open={isOpen} onOpenChange={closeDialog} modal={false}>
@@ -64,7 +75,8 @@ export function DrawerIncome() {
                 <DrawerHeader>
                     <DrawerTitle>Manage {data.toLowerCase()}</DrawerTitle>
                     <DrawerDescription>
-                        Make changes to your data here. Click save when you're done.
+                        Make changes to your data here. Click save when you're
+                        done.
                     </DrawerDescription>
                 </DrawerHeader>
 
@@ -87,7 +99,12 @@ export function DrawerIncome() {
                                         <Input
                                             placeholder="Quantity"
                                             type="number"
-                                            readOnly={data === "SAVING" ? false : true}
+                                            readOnly={
+                                                data === "SAVING" ||
+                                                data === "SAVINGOUT"
+                                                    ? false
+                                                    : true
+                                            }
                                             {...field}
                                         />
                                     </FormControl>
@@ -96,41 +113,57 @@ export function DrawerIncome() {
                             )}
                         />
 
-                        {data === "SAVING" || data === "SAVINGOUT" && (
+                        {(data === "SAVING" || data === "SAVINGOUT") && (
                             <FormField
                                 control={form.control}
-                                name="savingId"
+                                name="instrumentId"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Saving *</FormLabel>
+                                        <FormLabel>Instrument *</FormLabel>
                                         <Select
                                             onValueChange={(value) => {
                                                 field.onChange(value);
-                                                const selected = savingData.find(
-                                                    (opt: any) => opt.id.toString() === value
-                                                );
+                                                const selected =
+                                                    instrumentData.find(
+                                                        (opt: InstrumentData) =>
+                                                            opt.id.toString() ===
+                                                            value,
+                                                    );
                                                 if (selected) {
-                                                    form.setValue("price", selected.instrument.buyPrice);
+                                                    form.setValue(
+                                                        "price",
+                                                        selected.buyPrice,
+                                                    );
                                                 }
                                             }}
                                             defaultValue={field.value.toString()}
                                         >
                                             <FormControl>
                                                 <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Select savings" />
+                                                    <SelectValue placeholder="Select instrument" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {savingData.map((opt: any) => (
-                                                    <SelectItem key={opt.id} value={opt.id.toString()}>
-                                                        {opt.savingName} - {formatCurrency(opt.instrument.buyPrice)}
-                                                    </SelectItem>
-                                                ))}
+                                                {instrumentData.map(
+                                                    (opt: InstrumentData) => (
+                                                        <SelectItem
+                                                            key={opt.id}
+                                                            value={opt.id.toString()}
+                                                        >
+                                                            {opt.instrumentName}{" "}
+                                                            -{" "}
+                                                            {formatCurrency(
+                                                                opt.buyPrice,
+                                                            )}
+                                                        </SelectItem>
+                                                    ),
+                                                )}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
                                     </FormItem>
-                                )} />
+                                )}
+                            />
                         )}
 
                         <FormField
@@ -143,7 +176,9 @@ export function DrawerIncome() {
                                         <Input
                                             placeholder="Price"
                                             type="number"
-                                            readOnly={data === "SAVING" ? true : false}
+                                            readOnly={
+                                                data === "SAVING" ? true : false
+                                            }
                                             {...field}
                                         />
                                     </FormControl>
@@ -159,7 +194,11 @@ export function DrawerIncome() {
                                 <FormItem>
                                     <FormLabel>Category *</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Category" type="text" {...field} />
+                                        <Input
+                                            placeholder="Category"
+                                            type="text"
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -173,7 +212,11 @@ export function DrawerIncome() {
                                 <FormItem>
                                     <FormLabel>Notes *</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Notes" type="text" {...field} />
+                                        <Input
+                                            placeholder="Notes"
+                                            type="text"
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

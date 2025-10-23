@@ -1,127 +1,136 @@
 "use client";
-import { DataTable } from "@/components/data-table/data-table";
-import { ColumnDef } from "@tanstack/react-table";
-import { AddOn, SavingData,Toolbar } from "@/types/interface";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import CountUp from "react-countup";
+import { motion } from "framer-motion";
 import { useQueryApi } from "@/hooks/use-query";
-import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useDialogStore } from "@/stores/dialog-store";
-import { confirmAlert } from "@/lib/confirm-alert";
-import { formatCurrency } from "@/lib/utils";
-import { DialogSaving } from "@/components/pop-up/popup-saving";
+import { Holding } from "@/types/interface";
 
-const columns: ColumnDef<SavingData>[] = [
-    {
-        header: 'Instrument Code',
-        accessorKey: 'instrument.instrumentCode',
-        size: 10
-    },
-    {
-        header: 'Instrument Name',
-        accessorKey: 'instrument.instrumentName'
-    },
-    {
-        header: 'Quantity',
-        accessorKey: 'amount'
-    },
-    {
-        header: 'Amount',
-        accessorKey: 'totalAmount',
-        cell: ({ row }) => {
-            const amount = row.original.amount * row.original.instrument.sellPrice;
+export default function PortfolioPage() {
+    const { data, isLoading } = useQueryApi("savings", "savings", "GET");
 
-            return formatCurrency(amount);
-        }
-    },
-]
+    // Optional: fallback data for smoother dev/testing
+    const totalValue = data?.totalValue ?? 0;
+    const totalProfit = data?.totalProfit ?? 0;
+    const holdings = data?.holdings ?? [];
 
-
-export default function Saving() {
-    const addOns: AddOn[] = [
-        {
-            name: 'Edit',
-            icon: 'Pencil',
-            onClick: (row) => openPopup((row as { original: SavingData }).original),
-        },
-        {
-            name: 'Delete',
-            icon: 'Trash',
-            onClick: (row) => deleteData((row as { original: SavingData }).original),
-        },
-    ]
-
-    const toolbar: Toolbar[] = [
-        {
-            name: 'Create',
-            icon: 'Plus',
-            onClick: () => openPopup(),
-        }
-    ]
-    function openPopup(data?: unknown) {
-        if (data) {
-            openDialog(data, updateData);
-        } else {
-            openDialog({}, createData);
-        }
-    }
-
-    async function createData(dataSubmit: unknown) {
-        mutate(dataSubmit, {
-            onSuccess: () => {
-                closeDialog();
-            }
-        })
-    }
-    async function updateData(data: unknown) {
-        updateMutate(data, {
-            onSuccess: () => {
-                closeDialog();
-            }
-        })
-    }
-
-    async function deleteData(data: SavingData) {
-        confirmAlert({
-            message: "This action cannot be undone. This will permanently delete your data from our servers",
-            onConfirm: () => {
-                deleteMutate(data.id, {
-                    onSuccess: () => {
-                        closeDialog();
-                    }
-                })
-            }
-        })
-    }
-
-    const { isOpen, openDialog, closeDialog } = useDialogStore();
-    const { data, isLoading } = useQueryApi('savings', 'savings', 'GET');
-    const { mutate } = useQueryApi('savings', 'savings', 'POST');
-    const { mutate: updateMutate } = useQueryApi('savings', 'savings', 'PATCH');
-    const { mutate: deleteMutate } = useQueryApi('savings', 'savings', 'DELETE');
-
-    if (isLoading) { return <DataTableSkeleton columns={columns} row={5} /> };
     return (
-        <>
-            <Card className="@container/card">
-                <CardHeader>
-                    <CardTitle>Saving</CardTitle>
-                    <CardDescription>
-                        <span className="hidden @[540px]/card:block">
-                            Saving Data
-                        </span>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <DataTable
-                        toolbar={toolbar}
-                        columns={columns}
-                        data={data}
-                        addOns={addOns}
-                        allowSelection
-                    />
+        <div className="p-4 space-y-4">
+            {/* Total summary card */}
+            <Card className="py-2 bg-primary text-primary-foreground shadow-lg border-none rounded-2xl">
+                <CardContent className="p-6">
+                    {isLoading ? (
+                        <div className="space-y-3">
+                            <Skeleton className="h-5 w-24" />
+                            <Skeleton className="h-8 w-36" />
+                            <Skeleton className="h-5 w-24" />
+                            <Skeleton className="h-8 w-36" />
+                        </div>
+                    ) : (
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <p className="text-sm opacity-80">
+                                    Total Value
+                                </p>
+                                <motion.h2
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.4 }}
+                                    className="text-2xl font-semibold"
+                                >
+                                    <CountUp
+                                        end={totalValue}
+                                        prefix="Rp. "
+                                        separator=","
+                                        decimals={2}
+                                        duration={1}
+                                    />
+                                </motion.h2>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-sm opacity-80">
+                                    Total Profit
+                                </p>
+                                <motion.h2
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.4 }}
+                                    className={`text-lg font-semibold ${
+                                        totalProfit >= 0
+                                            ? "text-green-600"
+                                            : "text-red-600"
+                                    }`}
+                                >
+                                    <CountUp
+                                        end={totalProfit}
+                                        prefix={totalProfit >= 0 ? "+" : ""}
+                                        suffix="%"
+                                        decimals={2}
+                                        duration={1}
+                                    />
+                                </motion.h2>
+                            </div>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
-            {isOpen && <DialogSaving />}
-        </>
-    )
+
+            {/* Holdings list */}
+            <div className="space-y-2">
+                {isLoading
+                    ? Array(3)
+                          .fill(0)
+                          .map((_, i) => (
+                              <Skeleton
+                                  key={i}
+                                  className="h-16 w-full rounded-xl"
+                              />
+                          ))
+                    : holdings.map((item: Holding) => (
+                          <Card
+                              key={item.id}
+                              className=" py-0 border-none shadow-sm rounded-xl"
+                          >
+                              <CardContent className="p-4 flex justify-between items-center">
+                                  <div>
+                                      <p className="font-medium text-sm">
+                                          {item.instrumentCode}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground">
+                                          {item.instrumentName}
+                                      </p>
+                                  </div>
+                                  <div className="text-right">
+                                      <p className="text-sm font-medium">
+                                          <CountUp
+                                              end={item.value}
+                                              prefix="Rp. "
+                                              separator=","
+                                              decimals={2}
+                                              duration={1}
+                                          />
+                                      </p>
+                                      <p
+                                          className={`text-xs ${
+                                              item.profit >= 0
+                                                  ? "text-green-600"
+                                                  : "text-red-600"
+                                          }`}
+                                      >
+                                          <CountUp
+                                              end={item.profit}
+                                              prefix={
+                                                  item.profit >= 0 ? "+" : ""
+                                              }
+                                              decimals={2}
+                                              duration={0.8}
+                                          />
+                                      </p>
+                                  </div>
+                              </CardContent>
+                          </Card>
+                      ))}
+            </div>
+        </div>
+    );
 }
