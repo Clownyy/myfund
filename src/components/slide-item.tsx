@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "./ui/separator";
 import { formatCurrency } from "@/lib/utils";
 import { ScrollArea } from "./ui/scroll-area";
+import { Badge } from "./ui/badge";
 
 type SwipeableItem = {
     id: number;
     transType: string;
+    variant: "default" | "destructive" | "secondary";
     description: string;
     amount: number;
 };
@@ -156,9 +158,12 @@ const SwipeableListItem: React.FC<SwipeableListItemProps> = ({
                 <div className="flex items-center justify-between">
                     <div className="flex items-center ml-2">
                         <div>
-                            <p className="font-medium text-sm">
+                            <Badge
+                                variant={item.variant || "outline"}
+                                className="font-medium text-sm"
+                            >
                                 {item.transType}
-                            </p>
+                            </Badge>
                             <p className="text-xs text-muted-foreground">
                                 {item.description}
                             </p>

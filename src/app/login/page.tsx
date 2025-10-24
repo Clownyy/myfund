@@ -66,7 +66,7 @@ export default function Login() {
     }, [session, router]);
 
     return (
-        <div className="w-full px-2 h-screen flex items-center justify-center bg-gradient-to-b from-primary/30 via-background to-background">
+        <div className="w-full px-5 h-screen flex items-center justify-center bg-gradient-to-b from-primary/30 via-background to-background">
             <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}

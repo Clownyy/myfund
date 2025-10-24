@@ -3,7 +3,11 @@ import { SidebarBottomNav } from "@/components/sidebar-bottom-nav";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     return (
         <SidebarProvider
             style={
@@ -15,7 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         >
             <AppSidebar variant="inset" />
             <SidebarInset className="pb-20">
-                <div className="sticky top-0 z-50">
+                <div className="sticky top-0 shadow-sm bg-card z-50">
                     <SiteHeader />
                 </div>
                 <div className="flex flex-1 flex-col overflow-auto pt-4 md:pt-8 md:pb-8 px-5 lg:px-12">
@@ -24,5 +28,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </SidebarInset>
             <SidebarBottomNav />
         </SidebarProvider>
-    )
+    );
 }
