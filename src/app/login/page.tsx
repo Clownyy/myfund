@@ -19,6 +19,7 @@ import { signIn, useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 
 const loginSchema = z.object({
     username: z.string().min(1, "Username is required"),
@@ -81,9 +82,20 @@ export default function Login() {
                             transition={{ delay: 0.2, duration: 0.4 }}
                         >
                             <div className="mx-auto w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shadow-md">
-                                <span className="text-background font-bold text-xl">
-                                    F
-                                </span>
+                                <Image
+                                    src="/fundster-transparent.png"
+                                    alt="Fundster Logo Light"
+                                    width={30}
+                                    height={30}
+                                    className="block dark:hidden"
+                                />
+                                <Image
+                                    src="/fundster-dark-transparent.png"
+                                    alt="Fundster Logo Dark"
+                                    width={30}
+                                    height={30}
+                                    className="hidden dark:block"
+                                />
                             </div>
                         </motion.div>
                         <CardTitle className="text-2xl font-semibold tracking-tight mt-2">
