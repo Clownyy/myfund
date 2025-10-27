@@ -1,9 +1,10 @@
-import Image from "next/image";
-import { redirect } from "next/navigation";
 import Login from "./login/page";
+import { Suspense } from "react";
 
 export default function Home() {
-  return (
-    <Login />
-  );
+    return (
+        <Suspense>
+            <Login />
+        </Suspense>
+    );
 }
