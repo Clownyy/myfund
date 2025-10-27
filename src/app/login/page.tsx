@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
@@ -32,6 +32,10 @@ interface Login {
 }
 
 export default function Login() {
+    const searchParams = useSearchParams();
+    const deviceId = searchParams.get("deviceId");
+    const callbackUrl = searchParams.get("callbackUrl");
+
     const { data: session } = useSession();
     const [isLoading, setLoading] = useState(false);
     const router = useRouter();
@@ -49,6 +53,7 @@ export default function Login() {
         const res = await signIn("credentials", {
             username: data.username,
             password: data.password,
+            deviceId: deviceId,
             redirect: false,
         });
         setLoading(false);
@@ -56,7 +61,11 @@ export default function Login() {
             toast.error("Login failed, username or password is incorrect");
         } else {
             toast.success("Login successful!");
-            router.replace("/dashboard");
+            if (callbackUrl != null) {
+                router.replace(callbackUrl);
+            } else {
+                router.replace("/dashboard");
+            }
         }
     };
 
