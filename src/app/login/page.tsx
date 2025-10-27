@@ -33,8 +33,8 @@ interface Login {
 
 export default function Login() {
     const searchParams = useSearchParams();
-    const deviceId = searchParams.get("deviceId");
-    const callbackUrl = searchParams.get("callbackUrl");
+    const deviceId = searchParams.get("deviceId") || "";
+    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
     const { data: session } = useSession();
     const [isLoading, setLoading] = useState(false);
